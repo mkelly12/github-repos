@@ -1,0 +1,22 @@
+<script type="text/template" id="commit-template">
+  <div class="small-1 columns">
+    <img class="avatar" src="<%= committer ? committer.avatar_url : 'assets/img/darth.jpg' %>" />
+  </div>
+  <div class="small-11 columns">
+    <a href="<%= html_url %>"><span class="message" title="<%= commit.message %>"><%= commit.message %></span></a>
+    <span class="author">
+      <% if (committer) { %>
+        <a href="<%= committer.html_url %>"><%= committer.login %></a>
+      <% } else if (author) { %>
+        <a href="<%= author.html_url %>"><%= author.login %></a>
+      <% } else if (commit.author) { %>
+        <%= commit.author.name %></a>
+      <% } %>
+    </span>
+  
+    <!-- <a href="<%= html_url %>"><%= sha %></a> -->
+    <span class="time"><%= jQuery.timeago(commit.committer.date) %></span>
+    <!-- <span><%= commit.comment_count %><span class="octicon octicon-comment"></span></span> -->
+    <!-- <span class="comment-icon mega-octicon octicon-link-external"></span> -->
+  </div>
+</script>

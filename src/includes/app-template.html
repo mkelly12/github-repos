@@ -1,0 +1,22 @@
+<script type="text/template" id="app-template">
+  <form data-repo-form>
+    <div class="row collapse">
+      <div class="small-3 large-2 columns">
+        <span class="prefix">github.com/</span>
+      </div>
+      <div class="small-7 large-8 columns">
+        <input class="<%= errorMessage ? 'error' : '' %>" tabindex=1 data-repo-name-input type="text" placeholder="Enter repo name...">
+        <% if (errorMessage) { %>
+          <small class="error"><%= errorMessage %></small>
+        <% } %>
+      </div>
+      <div class="small-2 large-2 columns">
+        <button href="#" type="submit" class="load-repos button postfix"><span>Load Repos</span><img src="assets/img/loading.gif" /></button>
+      </div>
+    </div>
+  </form>
+  
+  <div data-repos>
+    
+  </div>
+</script>

@@ -1,0 +1,60 @@
+.commit {
+  margin-bottom: 10px;
+  border: 1px solid #eee;
+  padding: 10px;
+  max-width: 59rem;
+  margin-bottom: -1px;
+  
+  .avatar {
+    width: 2.5rem;
+    border-radius: 4px;
+  }
+  .message {
+    color: #000;
+    
+    display: block;
+    line-height: 1rem;
+    
+    width: 95%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+  
+  
+  .author a, .time {
+    color: #aaa;
+  }
+  
+  .author a:hover {
+    text-decoration: underline;
+  }
+  
+  .comment-icon {
+    display: none;
+    line-height: .5rem;
+    color: #ccc;
+    float: right;
+  }
+  
+  &:hover {
+    .comment-icon {
+      display: inline;
+    }
+  }
+}
+
+
+.commit:first-child {
+  margin-top: 30px;
+  border-radius-top: 4px;
+}
+
+.commit:last-child {
+  margin-bottom: 30px;
+  border-radius-bottom: 4px;
+}

@@ -1,0 +1,22 @@
+.app-view {
+  margin-top: 20px;
+  
+  .load-repos {
+    img {
+      display: none;
+      margin: 0 auto;
+    }
+  }
+  
+  &.loading {
+    .load-repos {
+      span {
+        display: none;
+      }
+      img {
+        display: block;
+      }
+    }
+  }
+
+}

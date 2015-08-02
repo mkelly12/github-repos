@@ -1,0 +1,34 @@
+<script type="text/template" id="repo-template">
+  <div class="row repo-card">
+    <div class="small-12 columns">
+      <div class="row">
+        <div class="small-6 columns">
+          <h1>
+            <span class="mega-octicon octicon-repo"></span>
+            <a href="<%= html_url %>" class="title"><%= name %></a>            
+          </h1>
+        </div>
+        <div class="small-6 columns">
+          <span class="number"><span class="octicon octicon-star"></span> Stars <%= stargazers_count %></span>
+          <span class="number"><span class="octicon octicon-repo-push"></span> Last push <%= jQuery.timeago(pushed_at) %></span>
+          <!-- <span class="number"><%= watchers_count %><span class="octicon octicon-eye"></span></span> -->
+        </div>
+      </div>
+      
+      
+      <h5><%= description %></h5>
+      <!--<h5>Size <%= size %></h5> -->
+      <a data-show-commits class="show-commits" href="#">View Commits</a>
+      <a data-hide-commits class="hide-commits" href="#">Hide Commits</a>
+    </div>
+  </div>
+  
+  <div data-commits class="commits">
+    <div data-show-all class="show-all commit row">
+      <div class="small-12 columns">
+        <a href="https://github.com/<%= full_name %>/commits/<%= default_branch %>">View all commits on <%= default_branch %></a>
+      </div>
+    </div>
+  </div>
+  
+</script>
