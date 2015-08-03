@@ -12287,8 +12287,107 @@ var gh = gh || {};
 gh.settings = {
     commits_loaded: 10,
     repos_loaded: 100,
-    access_token: "d25cdf0d4768d9f6cffadb5c073ca964d3ed0ed9"
+    access_token: null
 };
+
+(function(factory) {
+    if (typeof define === "function" && define.amd) {
+        define(factory);
+    } else if (typeof exports === "object") {
+        module.exports = factory();
+    } else {
+        var _OldCookies = window.Cookies;
+        var api = window.Cookies = factory();
+        api.noConflict = function() {
+            window.Cookies = _OldCookies;
+            return api;
+        };
+    }
+})(function() {
+    function extend() {
+        var i = 0;
+        var result = {};
+        for (;i < arguments.length; i++) {
+            var attributes = arguments[i];
+            for (var key in attributes) {
+                result[key] = attributes[key];
+            }
+        }
+        return result;
+    }
+    function init(converter) {
+        function api(key, value, attributes) {
+            var result;
+            if (arguments.length > 1) {
+                attributes = extend({
+                    path: "/"
+                }, api.defaults, attributes);
+                if (typeof attributes.expires === "number") {
+                    var expires = new Date();
+                    expires.setMilliseconds(expires.getMilliseconds() + attributes.expires * 864e5);
+                    attributes.expires = expires;
+                }
+                try {
+                    result = JSON.stringify(value);
+                    if (/^[\{\[]/.test(result)) {
+                        value = result;
+                    }
+                } catch (e) {}
+                value = encodeURIComponent(String(value));
+                value = value.replace(/%(23|24|26|2B|3A|3C|3E|3D|2F|3F|40|5B|5D|5E|60|7B|7D|7C)/g, decodeURIComponent);
+                key = encodeURIComponent(String(key));
+                key = key.replace(/%(23|24|26|2B|5E|60|7C)/g, decodeURIComponent);
+                key = key.replace(/[\(\)]/g, escape);
+                return document.cookie = [ key, "=", value, attributes.expires && "; expires=" + attributes.expires.toUTCString(), attributes.path && "; path=" + attributes.path, attributes.domain && "; domain=" + attributes.domain, attributes.secure ? "; secure" : "" ].join("");
+            }
+            if (!key) {
+                result = {};
+            }
+            var cookies = document.cookie ? document.cookie.split("; ") : [];
+            var rdecode = /(%[0-9A-Z]{2})+/g;
+            var i = 0;
+            for (;i < cookies.length; i++) {
+                var parts = cookies[i].split("=");
+                var name = parts[0].replace(rdecode, decodeURIComponent);
+                var cookie = parts.slice(1).join("=");
+                if (cookie.charAt(0) === '"') {
+                    cookie = cookie.slice(1, -1);
+                }
+                try {
+                    cookie = converter && converter(cookie, name) || cookie.replace(rdecode, decodeURIComponent);
+                    if (this.json) {
+                        try {
+                            cookie = JSON.parse(cookie);
+                        } catch (e) {}
+                    }
+                    if (key === name) {
+                        result = cookie;
+                        break;
+                    }
+                    if (!key) {
+                        result[name] = cookie;
+                    }
+                } catch (e) {}
+            }
+            return result;
+        }
+        api.get = api.set = api;
+        api.getJSON = function() {
+            return api.apply({
+                json: true
+            }, [].slice.call(arguments));
+        };
+        api.defaults = {};
+        api.remove = function(key, attributes) {
+            api(key, "", extend(attributes, {
+                expires: -1
+            }));
+        };
+        api.withConverter = init;
+        return api;
+    }
+    return init();
+});
 
 (function(factory) {
     if (typeof define === "function" && define.amd) {
@@ -12474,11 +12573,15 @@ var gh = gh || {};
 
 gh.Repo = Backbone.Model.extend({
     fetchCommits: function(success) {
+        var data = {
+            per_page: gh.settings.commits_loaded
+        };
+        if (gh.settings.access_token) {
+            data.access_token = gh.settings.access_token;
+        }
+        access_token: gh.settings.access_token;
         $.ajax("https://api.github.com/repos/" + this.get("owner").login + "/" + this.get("name") + "/commits", {
-            data: {
-                per_page: gh.settings.commits_loaded,
-                access_token: gh.settings.access_token
-            },
+            data: data,
             success: function(data) {
                 this.set("commits", data);
                 success();
@@ -12492,11 +12595,14 @@ var gh = gh || {};
 gh.RepoCollection = Backbone.Collection.extend({
     model: gh.Repo,
     fetch: function(orgName, success, failure) {
+        var data = {
+            per_page: gh.settings.repos_loaded
+        };
+        if (gh.settings.access_token) {
+            data.access_token = gh.settings.access_token;
+        }
         $.ajax("https://api.github.com/orgs/" + orgName + "/repos", {
-            data: {
-                per_page: gh.settings.repos_loaded,
-                access_token: gh.settings.access_token
-            },
+            data: data,
             success: function(data) {
                 this.reset(data);
                 success();
@@ -12520,22 +12626,26 @@ var gh = gh || {};
 gh.AppView = Backbone.View.extend({
     tagName: "div",
     className: "app-view",
-    events: {},
+    events: {
+        "submit [data-api-key-form]": "submitApiKeyForm"
+    },
     initialize: function() {
         this.repoCollection = new gh.RepoCollection();
-        this.$el.on("submit", this.submitRepoForm.bind(this));
+        this.$el.on("submit", "[data-repo-form]", this.submitRepoForm.bind(this));
         this.error = false;
+        gh.settings.access_token = Cookies.get("access_token");
     },
     render: function() {
         var view = this;
         view.$el.html(view.template({
-            errorMessage: view.errorMessage
+            errorMessage: view.errorMessage,
+            access_token: gh.settings.access_token
         }));
         view.repoCollection.each(function(repo) {
             var repoView = new gh.RepoView({
                 model: repo
             });
-            view.$el.append(repoView.render().el);
+            view.$("[data-repos]").append(repoView.render().el);
         });
         return view;
     },
@@ -12557,6 +12667,10 @@ gh.AppView = Backbone.View.extend({
         error = function(response) {
             if (response.status === 404) {
                 view.errorMessage = "Could not find that repo";
+            } else if (response.status === 401) {
+                view.errorMessage = "Invalid API key";
+            } else if (response.status === 403 && !gh.settings.access_token) {
+                view.errorMessage = "Hourly requests exceeded. Try setting an API key.";
             } else {
                 view.errorMessage = "Something went wrong with the GitHub API, email Matt (mkelly12@gmail.com)";
             }
@@ -12564,6 +12678,16 @@ gh.AppView = Backbone.View.extend({
             view.$el.removeClass("loading");
         };
         view.repoCollection.fetch(view.$("[data-repo-name-input]").val(), success, error);
+    },
+    submitApiKeyForm: function(event) {
+        var view = this;
+        event.preventDefault();
+        gh.settings.access_token = view.$("[data-api-key-input]").val();
+        Cookies.set("access_token", gh.settings.access_token);
+        view.$("[data-save-api-key-button]").html("Saved!");
+        setTimeout(function() {
+            view.$("[data-save-api-key-button]").html("Save API Key");
+        }, 2e3);
     },
     template: _.template($("#app-template").html())
 });
