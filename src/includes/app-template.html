@@ -5,7 +5,7 @@
         <span class="prefix">github.com/</span>
       </div>
       <div class="small-7 large-8 columns">
-        <input class="<%= errorMessage ? 'error' : '' %>" tabindex=1 data-repo-name-input type="text" placeholder="Enter repo name...">
+        <input class="<%= errorMessage ? 'error' : '' %>" tabindex=1 data-repo-name-input type="text" placeholder="Enter organization name...">
         <% if (errorMessage) { %>
           <small class="error"><%= errorMessage %></small>
         <% } %>
@@ -16,7 +16,27 @@
     </div>
   </form>
   
-  <div data-repos>
-    
+  <div data-repos></div>
+  
+  <div class="row instructions">
+    <div class="large-4 columns">
+      <h1>Github Repos</h1>
+      <p>This is a simple interactive UI to display a list of an arbitrary organization's Github projects ranked by star gazers.</p>
+      <p>It's completly impemented client side using Backbone.js and a little jQuery. The source code is available on <a href="https://github.com/mkelly12/github-repos">Github</a></p>
+      <p>If you want to see your private repos or make more then 60 API requests an hour you will need to enter your <a href="https://github.com/blog/1509-personal-api-tokens">Github personal access token</a> below.</p>
+      
+      <form data-api-key-form>
+        <div class="row collapse">
+          <div class="small-12 columns">
+            <input data-api-key-input type="text" value="<%= access_token %>" placeholder="Github personal access token...">
+            <button data-save-api-key-button href="#" type="submit" class="button"><span>Save API Key</span></button>
+          </div>
+        </div>
+      </form>
+      
+    </div>
+    <div class="large-8 columns">
+      <img class="screen-shot" src="assets/img/app_screen_shot.png" />
+    </div>
   </div>
 </script>

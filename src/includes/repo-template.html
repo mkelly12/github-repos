@@ -2,13 +2,13 @@
   <div class="row repo-card">
     <div class="small-12 columns">
       <div class="row">
-        <div class="small-6 columns">
+        <div class="large-6 small-12 columns">
           <h1>
             <span class="mega-octicon octicon-repo"></span>
             <a href="<%= html_url %>" class="title"><%= name %></a>            
           </h1>
         </div>
-        <div class="small-6 columns">
+        <div class="large-6 columns hide-for-small">
           <span class="number"><span class="octicon octicon-star"></span> Stars <%= stargazers_count %></span>
           <span class="number"><span class="octicon octicon-repo-push"></span> Last push <%= jQuery.timeago(pushed_at) %></span>
           <!-- <span class="number"><%= watchers_count %><span class="octicon octicon-eye"></span></span> -->

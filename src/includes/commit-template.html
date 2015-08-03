@@ -1,8 +1,8 @@
 <script type="text/template" id="commit-template">
-  <div class="small-1 columns">
+  <div class="small-2 large-1 columns">
     <img class="avatar" src="<%= committer ? committer.avatar_url : 'assets/img/darth.jpg' %>" />
   </div>
-  <div class="small-11 columns">
+  <div class="small-10 large-11 columns">
     <a href="<%= html_url %>"><span class="message" title="<%= commit.message %>"><%= commit.message %></span></a>
     <span class="author">
       <% if (committer) { %>

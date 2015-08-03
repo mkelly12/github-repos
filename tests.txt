@@ -1,0 +1,17 @@
+Organization selection form
+  Enter org that does not exist: Error stating org does not exist
+  Enter org with no public repos: Error stating that org has no public repos
+  Enter org with at least one public repo: Repos are listed
+  Enter nothing for org name: Error state stating org does not exist
+  Enter org with over 100 repos: All repos are shown. FAILING, only the first 100 repos are showing
+  Enter org with invalid API key: Error status showing indicating invalid API key
+  Enter org without API key after making more then 60 requests in an hour: Error message asking you to enter an API key
+  Enter org with API key after making more then 60 requests in an hour: No error
+  Enter org with API key after making more then 6,000 requests in an hour: Generic error message (not tested)
+  
+Repo
+  Click show commits: 10 most recent commits for this repo are shown (settings dependent), link to view all commits is shown, "View commits" changes to "Hide Commits"
+  Click hide commits: Commits for this repo are hidden.  "Hide Commits" changes to "View Commits"
+  
+
+    

@@ -4,11 +4,16 @@ gh.RepoCollection = Backbone.Collection.extend({
   model: gh.Repo,
   
   fetch: function (orgName, success, failure) {
+    var data = {
+      per_page: gh.settings.repos_loaded
+    };
+    
+    if (gh.settings.access_token) {
+      data.access_token = gh.settings.access_token;
+    }
+    
     $.ajax('https://api.github.com/orgs/' + orgName + '/repos', {
-      data: {
-        per_page: gh.settings.repos_loaded,
-        access_token: gh.settings.access_token
-      },
+      data: data,
       success: function (data) {
         this.reset(data);
         success();
